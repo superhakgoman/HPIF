@@ -1,10 +1,10 @@
 var HPIF = function () {
-    try{
+    try {
         var charset = document.charset || document.characterSet;
-        if(charset !== "UTF-8"){
+        if (charset !== "UTF-8") {
             throw new Error("HPIF는 UTF-8에서만 동작합니다.");
         }
-    } catch(error) {
+    } catch (error) {
         console.error(error.name + " : " + error.message);
         return;
     }
@@ -18,7 +18,7 @@ var HPIF = function () {
     //                   받침없음      ㄳ       ㄵ      ㄶ       ㄺ      ㄻ       ㄼ       ㄽ      ㄾ       ㄿ      ㅀ       ㅄ
     var DoubleBatchim = [0x0000, 0x3133, 0x3135, 0x3136, 0x313a, 0x313b, 0x313c, 0x313d, 0x313e, 0x313f, 0x3140, 0x3144];
 
-    var C$Parser = function(){
+    var C$Parser = function () {
         function endedWithVowel(str) {
             try {
                 if (typeof str === "string") {
@@ -68,12 +68,12 @@ var HPIF = function () {
             }
         }
 
-        function toChoseongChe(str){
+        function toChoseongChe(str) {
             try {
                 if (typeof str === "string") {
                     str = str.replace(/[^가-힣]/g, '');
                     var result = [];
-                    for(var i = 0; i < str.length; i++){
+                    for (var i = 0; i < str.length; i++) {
                         var ch = str.charCodeAt(i);
                         if (ch >= 0xAC00 && ch <= 0xD7A3) {
                             result.push(String.fromCharCode(ChoSeong[parseInt((ch - 0xAC00) / (21 * 28))]));
@@ -90,12 +90,11 @@ var HPIF = function () {
         }
 
         return {
-            endedWithVowel : endedWithVowel,
-            toJaso : toJaso,
+            endedWithVowel: endedWithVowel,
+            toJaso: toJaso,
             toChoseongChe: toChoseongChe,
         };
     }();
-
 
 
     function anagram(str) {
@@ -168,27 +167,32 @@ var HPIF = function () {
     }
 
     var C$AddJosa = function () {
-        function eulleul(str) {
+        var quotationMark = "";
+
+        function eulleul(str, customQuotationMark) {
+            var qMark = customQuotationMark || quotationMark;
             if (C$Parser.endedWithVowel(str)) {
-                return str + "를";
+                return qMark + str + qMark + "를";
             } else {
-                return str + "을";
+                return qMark + str + qMark  + "을";
             }
         }
 
-        function eunneun(str) {
+        function eunneun(str, customQuotationMark) {
+            var qMark = customQuotationMark || quotationMark;
             if (C$Parser.endedWithVowel(str)) {
-                return str + "는";
+                return qMark + str + qMark  + "는";
             } else {
-                return str + "은";
+                return qMark + str + qMark  + "은";
             }
         }
 
-        function iga(str) {
+        function iga(str, customQuotationMark) {
+            var qMark = customQuotationMark || quotationMark;
             if (C$Parser.endedWithVowel(str)) {
-                return str + "가";
+                return qMark + str + qMark  + "가";
             } else {
-                return str + "이";
+                return qMark + str + qMark  + "이";
             }
         }
 
@@ -202,7 +206,7 @@ var HPIF = function () {
 
     return {
         anagram: anagram,
-        addJosa: C$AddJosa,
-        parser : C$Parser
+        AddJosa: C$AddJosa,
+        Parser: C$Parser
     };
 }();
